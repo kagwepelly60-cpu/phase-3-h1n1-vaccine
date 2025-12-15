@@ -1,4 +1,3 @@
-# Phase 3 H1N1 Vaccine
 # Phase 3 Project: Predicting H1N1 Vaccine Uptake
 
 ## Overview
