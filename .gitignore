@@ -1,7 +1,7 @@
 # Jupyter Notebook checkpoints
 .ipynb_checkpoints/
 
-# Python cache
+# Python cache files
 __pycache__/
 *.pyc
 
@@ -9,13 +9,14 @@ __pycache__/
 venv/
 env/
 
-# OS files
+# OS-specific files
 .DS_Store
 Thumbs.db
 
-# Editor files
+# Editor settings
 .vscode/
 .idea/
 
-# Large outputs (optional)
+# Logs (optional)
 *.log
+
