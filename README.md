@@ -1,101 +1,138 @@
-# Phase 3 Project: Predicting H1N1 Vaccine Uptake
+# Predicting H1N1 Vaccine Uptake
 
 ## Overview
-This project uses machine learning classification models to predict whether an individual received the H1N1 influenza vaccine based on demographic information, health behaviors, and personal beliefs. The goal is to support public health stakeholders in understanding vaccination patterns and improving outreach strategies during future public health emergencies.
+This project uses machine learning classification models to predict whether an individual received the H1N1 vaccine during the 2009 pandemic. The goal is to support public health decision-making by identifying patterns associated with vaccine hesitancy and uptake, enabling more targeted and effective vaccination campaigns.
 
-The analysis follows the full data science lifecycle, including data preparation, iterative modeling, evaluation using appropriate classification metrics, and actionable recommendations.
+---
+
+## Repository Structure
+├── README.md # Project overview and findings
+├── h1n1_analysis 2 ipynb.ipynb # Full technical analysis notebook
+├── Predicting H1N1 Vaccine Uptake.pdf # Non-technical presentation
+├── training_set_features.csv # Survey features dataset
+└── training_set_labels.csv # Vaccination outcomes dataset
 
 ---
 
 ## Business and Data Understanding
 
 ### Stakeholder
-Public health agencies and policymakers responsible for designing vaccination outreach and preparedness strategies.
+**Primary Stakeholders:**  
+Public health agencies (e.g., CDC, Ministry of Health, county health departments)
 
-### Business Problem
-During public health emergencies, resources for vaccine distribution and public messaging are limited. Understanding which individuals are more likely or less likely to vaccinate enables targeted communication strategies that maximize vaccine uptake and reduce preventable illness.
+**Secondary Stakeholders:**  
+Healthcare providers, policymakers, and public health communication teams
+
+**Stakeholder Needs:**
+- Identify vaccine-hesitant populations
+- Understand barriers to vaccination
+- Target outreach campaigns effectively
+- Allocate limited public health resources
+- Improve preparedness for future pandemics
+
+---
 
 ### Dataset
-The dataset comes from the **National 2009 H1N1 Flu Survey**, containing responses from 26,707 individuals. It includes:
-- Demographic attributes
-- Health conditions
-- Behavioral responses
-- Opinions about vaccines and risk
+The dataset comes from the **2009 National H1N1 Flu Survey** and includes:
+- 26,707 respondents
+- Demographic information
+- Health behaviors
+- Attitudes toward vaccines
+- Target variable: **H1N1 vaccination status (Yes/No)**
 
-Although the dataset includes two vaccination outcomes (H1N1 and seasonal flu), this project focuses exclusively on **H1N1 vaccination**, as it best reflects behavior during pandemic conditions.
+The dataset is highly imbalanced:
+- 79% did not receive the vaccine
+- 21% did receive the vaccine
+
+---
+
+### Why This Dataset?
+This dataset was chosen because:
+1. It represents a real-world public health classification problem
+2. It includes actionable behavioral and attitudinal features
+3. It reflects realistic class imbalance seen in vaccination campaigns
+4. Insights can directly inform vaccination strategies
+5. It is publicly available and well-documented
 
 ---
 
 ## Data Preparation
+Key preparation steps included:
+- Merging survey responses with vaccination outcomes
+- Dropping features with more than 45% missing values
+- Imputing remaining missing values (median for numeric, mode for categorical)
+- One-hot encoding categorical variables
+- Performing an 80/20 stratified train-test split to prevent data leakage
 
-The dataset underwent careful preparation to ensure valid and unbiased modeling:
-
-- **Data merging:** Feature and label datasets were merged using respondent identifiers.
-- **Target selection:** H1N1 vaccination was selected as the binary classification target.
-- **Class imbalance analysis:** Only ~21% of respondents received the vaccine, making accuracy an unreliable metric.
-- **Missing data handling:**
-  - Columns with extreme missingness (>45%) were removed.
-  - Numeric features were imputed using the median.
-  - Categorical features were imputed using the mode.
-- **Categorical encoding:** One-hot encoding was applied with `drop_first=True` to prevent multicollinearity.
-- **Data leakage prevention:** The target variable was removed from features prior to modeling.
-- **Train-test split:** Data was split into 80% training and 20% testing sets using stratification to preserve class balance.
-
-These steps ensured the dataset was clean, interpretable, and suitable for machine learning.
+The final dataset contained **50 features** ready for modeling.
 
 ---
 
 ## Modeling
+An iterative modeling approach was used:
 
-An iterative modeling approach was used to balance interpretability and performance:
+1. **Baseline Logistic Regression**  
+   - Simple, interpretable benchmark model
 
-### Models Built
-1. **Baseline Model:** Logistic Regression  
-   - Simple, fast, and interpretable
-   - Serves as a performance benchmark
+2. **Tuned Logistic Regression**  
+   - Hyperparameter tuning (regularization strength)
+   - Optimized for F1-score due to class imbalance
 
-2. **Tuned Logistic Regression (Final Model)**  
-   - Hyperparameters adjusted to improve performance
-   - Maintains interpretability while improving predictive balance
-
-3. **Alternative Model:** Random Forest  
-   - Non-parametric model capable of capturing complex relationships
-   - Used for comparison against simpler approaches
+3. **Random Forest**  
+   - Nonparametric ensemble model
+   - Used to capture non-linear relationships and compare performance
 
 ---
 
 ## Evaluation
 
-### Primary Metric: F1-Score
-Due to class imbalance, accuracy alone is misleading. The F1-score was prioritized because it balances:
-- **Precision:** Avoids unnecessary outreach
-- **Recall:** Maximizes identification of individuals likely to vaccinate
+### Final Model: Tuned Logistic Regression
+- **F1-Score:** 0.520
+- **Accuracy:** 83.4%
+- **Precision:** 67.4%
+- **Recall:** 42.4%
 
-Evaluation was performed exclusively on the **test dataset**, ensuring realistic performance estimates.
+**Why F1-Score?**  
+Accuracy alone is misleading due to class imbalance. F1-score balances precision and recall, making it more appropriate for identifying vaccine-hesitant populations.
 
-### Key Findings
-- The tuned Logistic Regression model achieved the best balance between precision and recall.
-- The model performs well at identifying non-vaccinators but is more conservative when predicting vaccination.
-- Features related to perceived vaccine effectiveness, risk perception, and doctor recommendations were among the most influential.
+---
+
+### Feature Importance
+Top predictors of H1N1 vaccination:
+1. Doctor recommendation (H1N1)
+2. Perceived risk of H1N1
+3. Belief in vaccine effectiveness
+
+**Key Insight:**  
+Vaccination decisions are driven more by medical advice and personal beliefs than by demographic factors.
+
+---
+
+## Recommendations
+Based on model findings, public health agencies should:
+
+1. **Strengthen Doctor Engagement**
+   - Train providers in vaccine communication
+   - Encourage proactive vaccine recommendations
+
+2. **Address Risk Perception**
+   - Design messaging emphasizing disease risk
+   - Highlight vaccine effectiveness
+
+3. **Target Vaccine-Hesitant Groups**
+   - Use model predictions to focus outreach
+   - Deploy mobile clinics and community programs
+   - Allocate resources where impact will be highest
 
 ---
 
 ## Limitations
-
-- Missing data required imputation, which may introduce bias.
-- Self-reported survey responses may be inaccurate or influenced by recall bias.
-- The dataset represents behaviors and attitudes from the 2009 pandemic, which may not generalize to future outbreaks.
-- Some important predictors of vaccine uptake (such as healthcare access or cultural factors) are not included.
-- Grid search was limited to a small parameter space due to computational constraints.
-
+- Self-reported survey data may contain bias
+- Missing data required imputation
+- Dataset reflects behaviors from 2009 and may not fully generalize
+- Some social and cultural factors are not captured
 
 ---
 
 ## Conclusion
-
-This project demonstrates how classification models can support public health decision-making by identifying patterns in vaccination behavior. The final tuned Logistic Regression model provides interpretable insights while maintaining balanced predictive performance. These findings can inform targeted communication strategies, helping public health agencies allocate resources more effectively during future vaccination campaigns.
-
----
-
-
-
+This project demonstrates how machine learning classification can support public health decision-making. By identifying vaccine-hesitant populations and key drivers of vaccination behavior, the model provides actionable insights that can improve vaccination campaign effectiveness and inform future pandemic responses.
